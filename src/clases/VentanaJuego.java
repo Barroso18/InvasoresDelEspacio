@@ -35,6 +35,8 @@ public class VentanaJuego extends javax.swing.JFrame {
     int velocidadMarciano = 1;
     ArrayList <Explosion> listaExplosiones = new ArrayList();
     
+    int contadorTiempo = 0;
+    
     Timer temporizador = new Timer(10, new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -91,7 +93,13 @@ private void pintaMarcianos(Graphics2D miGrafico ){
             if (m.getX() <= 0){
                 cambia = true;
             }
-            miGrafico.drawImage(m.imagen1, m.getX(), m.getY(),null);
+            //dibujo la imagen correspondiente de los marcianos
+            if (contadorTiempo < 50){
+                miGrafico.drawImage(m.imagen1, m.getX(), m.getY(),null);
+            }
+            else {
+                miGrafico.drawImage(m.imagen2, m.getX(), m.getY(),null);
+            }
         }
         //si ha tocado, cambio la velocidad
         if (cambia){
@@ -152,7 +160,7 @@ private void chequeaColision(){
         Disparo d = listaDisparos.get(j);
         //asigno al rectángulo las dimensiones del disparo y su posicion
         rectanguloDisparo.setFrame(d.getX(), d.getY(), d.imagenDisparo.getWidth(null), d.imagenDisparo.getHeight(null));
-        
+        boolean disparoABorrar = false;
         //leo la lista de marcianos y comparo uno a uno con el disparo
         for (int i=0; i< listaMarcianos.size(); i++){
             Marciano m = listaMarcianos.get(i);
@@ -163,11 +171,23 @@ private void chequeaColision(){
                 e.setY(m.getY()+10);
                 listaExplosiones.add(e);
                 listaMarcianos.remove(i);
-                listaDisparos.remove(j);
+                //no borro aqui el disparo para evitar que se cuelgue 
+                //listaDisparos.remove(j);
+                disparoABorrar = true;
             }
+        }
+        if (disparoABorrar){
+            listaDisparos.remove(j);
         }
     }
     
+}
+
+private void actualizaContadorTiempo(){
+    contadorTiempo ++;
+    if (contadorTiempo > 100){
+        contadorTiempo = 0;
+    }
 }
 
 private void bucleDelJuego() {
@@ -183,6 +203,7 @@ private void bucleDelJuego() {
         pintaDisparos(g2);
         chequeaColision();
         pintaExplosiones(g2);
+        actualizaContadorTiempo();
         /////////////////////////////////////////////////////
         //apunto al jPanel y dibujo el buffer sobre el jPanel
         g2 = (Graphics2D) jPanel1.getGraphics();
