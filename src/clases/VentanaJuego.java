@@ -10,6 +10,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
+
 /**
  *
  * @author jorgecisneros
@@ -36,6 +37,8 @@ public class VentanaJuego extends javax.swing.JFrame {
     ArrayList <Explosion> listaExplosiones = new ArrayList();
     
     int contadorTiempo = 0;
+    
+    
     
     Timer temporizador = new Timer(10, new ActionListener() {
         @Override
@@ -73,6 +76,7 @@ public class VentanaJuego extends javax.swing.JFrame {
                 listaMarcianos.add(m);
             }
         }
+     
     }
 private void pintaMarcianos(Graphics2D miGrafico ){
 
@@ -273,7 +277,7 @@ private void bucleDelJuego() {
            Disparo d = new Disparo();
            d.setX( miNave.getX()+ miNave.getAnchoNave()/2 - d.imagenDisparo.getWidth(null)/2);
            d.setY( miNave.getY());
-           
+           d.sonidoDisparo.start();
            //agrego el disparo a la lista de disparos
            listaDisparos.add(d);
         }

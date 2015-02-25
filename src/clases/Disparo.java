@@ -4,6 +4,8 @@ package clases;
 import java.awt.Image;
 import java.io.IOException;
 import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 
 /**
  *
@@ -14,11 +16,16 @@ public class Disparo {
     //coordenadas del disparo
    private int x = 0;
    private int y = 0;
+   Clip sonidoDisparo;
    
    public Disparo(){
         try {
+            sonidoDisparo = AudioSystem.getClip();
+            sonidoDisparo.open(AudioSystem.getAudioInputStream(
+                     getClass().getResource("/sonidos/laser.wav")));
+            
             imagenDisparo = ImageIO.read((getClass().getResource("/imagenes/disparo.png")));
-        } catch (IOException ex) {
+        } catch (Exception ex) {
            
         }
    }
