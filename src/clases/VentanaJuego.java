@@ -174,6 +174,7 @@ private void chequeaColision(){
                 e.setX(m.getX()+10);
                 e.setY(m.getY()+10);
                 listaExplosiones.add(e);
+                e.sonidoExplosion.start();
                 listaMarcianos.remove(i);
                 //no borro aqui el disparo para evitar que se cuelgue 
                 //listaDisparos.remove(j);
@@ -181,6 +182,7 @@ private void chequeaColision(){
             }
         }
         if (disparoABorrar){
+            
             listaDisparos.remove(j);
         }
     }

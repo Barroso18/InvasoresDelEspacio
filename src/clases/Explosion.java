@@ -3,12 +3,15 @@ package clases;
 import java.awt.Image;
 import java.io.IOException;
 import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 
 /**
  *
  * @author xp
  */
 public class Explosion {
+    Clip sonidoExplosion;
     Image imagenExplosion = null;
     Image imagenExplosion2 = null;
         //posición x-y de la explosion
@@ -27,9 +30,12 @@ public class Explosion {
     
     public Explosion (){
         try {
+            sonidoExplosion = AudioSystem.getClip();
+            sonidoExplosion.open(AudioSystem.getAudioInputStream(
+                     getClass().getResource("/sonidos/explosion.wav")));
             imagenExplosion = ImageIO.read((getClass().getResource("/imagenes/e1.png")));
             imagenExplosion2 = ImageIO.read((getClass().getResource("/imagenes/e2.png")));
-        } catch (IOException ex) {
+        } catch (Exception ex) {
         }
 
     }
