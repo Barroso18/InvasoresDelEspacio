@@ -2,13 +2,16 @@ package clases;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import javax.swing.Timer;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.ArrayList;
+import javax.imageio.ImageIO;
 
 
 /**
@@ -38,6 +41,8 @@ public class VentanaJuego extends javax.swing.JFrame {
     
     int contadorTiempo = 0;
     
+    //control del fin de partida
+    boolean gameOver = false;
     
     
     Timer temporizador = new Timer(10, new ActionListener() {
@@ -154,11 +159,29 @@ private void pintaDisparos( Graphics2D g2){
             }
         }
 }
+ 
+private void chequeaColisionMarcianoConNave(){
+            //creo un marco para guardar el borde de la imagen de la nave
+    Rectangle2D.Double rectanguloNave = new Rectangle2D.Double();
+    rectanguloNave.setFrame(miNave.getX(), miNave.getY(), miNave.getAnchoNave(), miNave.getAnchoNave());
+            //creo un marco para guardar el borde de la imagen del marciano
+    Rectangle2D.Double rectanguloMarciano = new Rectangle2D.Double();
+    for (int i=0; i< listaMarcianos.size(); i++){
+            Marciano m = listaMarcianos.get(i);
+            rectanguloMarciano.setFrame(m.getX(), m.getY(), m.ancho, m.ancho);
+            if (rectanguloNave.intersects(rectanguloMarciano)){
+                 //algún marciano ha tocado con la nave
+                gameOver = true;
+            }
+    }
+}
+
 private void chequeaColision(){
         //creo un marco para guardar el borde de la imagen del marciano
     Rectangle2D.Double rectanguloMarciano = new Rectangle2D.Double();
         //creo un marco para guardar el borde de la imagen del disparo
     Rectangle2D.Double rectanguloDisparo = new Rectangle2D.Double(); 
+    
         //ahora leo la lista de disparos 
     for (int j=0; j<listaDisparos.size(); j++){
         Disparo d = listaDisparos.get(j);
@@ -196,20 +219,33 @@ private void actualizaContadorTiempo(){
     }
 }
 
+private void finDePartida (Graphics2D ramon){
+        try {
+            Image imagenLuser = ImageIO.read((getClass().getResource("/imagenes/luser.png")));
+            ramon.drawImage(imagenLuser, 100, 100, null);
+        } catch (IOException ex) {
+        }
+}
+
 private void bucleDelJuego() {
-        //primero apunto al buffer
-        Graphics2D g2 = (Graphics2D) buffer.getGraphics();
-        //pinto un rectángulo negro del tamaño de la ventana
-        g2.setColor(Color.BLACK);
-        g2.fillRect(0, 0, anchoPantalla, altoPantalla);
-        /////////////////////////////////////////////////////
-        //////    codigo del juego    ///////////////////////
-        pintaMarcianos(g2);
-        pintaNave(g2);
-        pintaDisparos(g2);
-        chequeaColision();
-        pintaExplosiones(g2);
-        actualizaContadorTiempo();
+    Graphics2D g2 = (Graphics2D) buffer.getGraphics();
+    if (!gameOver){
+            //pinto un rectángulo negro del tamaño de la ventana
+            g2.setColor(Color.BLACK);
+            g2.fillRect(0, 0, anchoPantalla, altoPantalla);
+            /////////////////////////////////////////////////////
+            //////    codigo del juego    ///////////////////////
+            pintaMarcianos(g2);
+            pintaNave(g2);
+            pintaDisparos(g2);
+            chequeaColision();
+            pintaExplosiones(g2);
+            actualizaContadorTiempo();
+            chequeaColisionMarcianoConNave();
+            }
+        else{
+            finDePartida(g2);
+        }
         /////////////////////////////////////////////////////
         //apunto al jPanel y dibujo el buffer sobre el jPanel
         g2 = (Graphics2D) jPanel1.getGraphics();
